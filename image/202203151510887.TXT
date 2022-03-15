@@ -1,0 +1,33 @@
+﻿    /** 发送transfer*/
+    private static void sendTransfer () {
+        log("sendTransfer");
+        if (FlavorControl.isSendTransfer() && !bSendTransfer) {
+            bSendTransfer = true;
+            new TransferSwitch((Context) Gdx.app, getStatisticsParams()).checkSwitch((Context)Gdx.app);
+        }
+    }
+
+    private static HashMap<String, Object> getStatisticsParams() {
+//        log("userid=" + getUserid());
+//        log("flavor=" + FlavorControl.getFlavor());
+//        log("server=" + "http://127.0.0.1:8010/yungame/");
+//        log("product=" + "kwyx");
+        HashMap<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put("stbtype", Build.MODEL);
+        paramsMap.put("userid", getUserid());
+        paramsMap.put("flavor", FlavorControl.getFlavor());	//江西电信传 "telecom_jiangxi"
+        if (FlavorControl.Area.isXinJiangTelecom()) {
+            paramsMap.put("server", "http://120.70.237.184:8080/yungame/");
+            paramsMap.put("product", "touhaowanjia");
+        } else if (FlavorControl.Area.isChongQingGd()) {
+            paramsMap.put("server", "http://192.168.34.81:8010/yungame/"); //正式用ip
+//            paramsMap.put("server", "http://125.62.17.129:8010/yungame/");  //测试用ip
+//            paramsMap.put("server", "http://192.168.0.170:81/yungame/");  //调试用ip
+            paramsMap.put("product", "kwyx");
+            CommonParams commonParams = BackendSystem.getParamsFromBackend();
+            if (commonParams != null && commonParams.map.containsKey("token")) {
+                paramsMap.put("token", commonParams.map.get("token"));
+            }
+        }        
+        return paramsMap;
+    }
